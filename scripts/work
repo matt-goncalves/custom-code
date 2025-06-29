@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+WORKDIR_FILE=$HOME/.config/_workdir
+
+gotowork() {
+
+  if [ -f "$WORKDIR_FILE" ]; then
+
+    DIR=$(cat "$WORKDIR_FILE")
+
+    if [ -d "$DIR" ]; then
+
+      cd "$DIR"
+
+      echo "Welcome back!"
+
+    else
+
+      echo "Error: work directory does not exist." >&2
+
+    fi
+
+  else
+
+    echo "Error: work directory not defined." >&2
+
+  fi
+
+}
+
+workdir() {
+  pwd > "$WORKDIR_FILE" && \
+    echo "Work directory defined."
+}

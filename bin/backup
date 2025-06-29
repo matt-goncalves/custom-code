@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+backup() {
+  local VERSION="1.0"
+  local ENCRYPT=0
+
+  local HELP_TEXT="Usage: backup [-h] [-v] [-e] dir1 [dir2 ...]
+Options:
+  -h      Show this help message and exit
+  -v      Show version information and exit
+  -e      Encrypt the backup zip file (will prompt for password)
+Arguments:
+  dir     One or more directories to backup"
+
+  # Parse options
+  OPTIND=1
+  while getopts ":hve" opt; do
+    case $opt in
+      h)
+        echo "$HELP_TEXT"
+        return 0
+        ;;
+      v)
+        echo "backup version $VERSION"
+        return 0
+        ;;
+      e)
+        ENCRYPT=1
+        ;;
+      \?)
+        echo "Error: Invalid option: -$OPTARG." >&2
+        return 1
+        ;;
+    esac
+  done
+
+  shift $((OPTIND - 1))
+
+  # Check that at least one directory is given
+  if [[ "$#" -lt 1 ]]; then
+    echo "Error: you must give at least one directory to backup." >&2
+    echo "$HELP_TEXT"
+    return 1
+  fi
+
+  for dir in "$@"; do
+    if [[ ! -d "$dir" ]]; then
+      echo "Error: directory '$dir' not found." >&2
+      continue
+    fi
+
+    local DATE
+    DATE=$(date +'%Y-%m-%d')
+    local ZIPFILE="BKP_${dir//\//_}_$DATE.zip"  # replace slashes with underscores in name
+
+    if (( ENCRYPT )); then
+      # Prompt for password (twice for confirmation)
+      echo -n "Enter password to encrypt backup '$ZIPFILE': "
+      read -s PASS1
+      echo
+      echo -n "Confirm password: "
+      read -s PASS2
+      echo
+      if [[ "$PASS1" != "$PASS2" ]]; then
+        echo "Error: passwords do not match. Skipping $dir." >&2
+        continue
+      fi
+      zip -9 -r -e -P "$PASS1" "$ZIPFILE" "$dir" && echo "Encrypted backup for '$dir' finished."
+    else
+      zip -9 -r "$ZIPFILE" "$dir" && echo "Backup for '$dir' finished."
+    fi
+  done
+}
+
+backup "$@"

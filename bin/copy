@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Copies from stdin into clipboard
+copy() {
+  xsel --input --clipboard
+}
+
+copy "$@"

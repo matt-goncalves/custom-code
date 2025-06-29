@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+timestamp() {
+  local style=""
+  local show_time=false
+  local version="1.0.0"
+
+  while [[ "$1" ]]; do
+    case "$1" in
+      -h|--help)
+        cat <<EOF
+Usage: timestamp [OPTIONS] STYLE
+
+STYLE:
+  iso      ISO 8601 (e.g., 2025-06-29)
+  lit      Literary (e.g., Sunday, June 29, 2025)
+  us       US format (e.g., 06/29/2025)
+  br       Brazilian format (e.g., 29/06/2025)
+  num      Numeric (e.g., 20250629)
+
+OPTIONS:
+  -t       Include time (formatted according to style)
+  -h       Show this help
+  -v       Show version
+EOF
+        return 0
+        ;;
+      -v|--version)
+        echo "timestamp version $version"
+        return 0
+        ;;
+      -t)
+        show_time=true
+        shift
+        ;;
+      -*)
+        echo "Unknown option: $1" >&2
+        return 1
+        ;;
+      *)
+        style="$1"
+        shift
+        ;;
+    esac
+  done
+
+  # Fallback if no style provided
+  [[ -z "$style" ]] && style="iso"
+
+  local format=""
+  local time_format_24="%H:%M"
+  local time_format_12="%I:%M %p"
+
+  case "$style" in
+    iso)
+      format="%Y-%m-%d"
+      $show_time && format+="T%H:%M:%S"
+      ;;
+    lit)
+      format="%A, %B %e, %Y"
+      $show_time && format+=". $time_format_12"
+      ;;
+    us)
+      format="%m/%d/%Y"
+      $show_time && format+=" $time_format_12"
+      ;;
+    br)
+      format="%d/%m/%Y"
+      $show_time && format+=" $time_format_24"
+      ;;
+    num)
+      format="%Y%m%d"
+      $show_time && format+="_%H%M%S"
+      ;;
+    *)
+      echo "Unknown style: $style" >&2
+      return 1
+      ;;
+  esac
+
+  # Ensure locale is set for consistent output
+  LC_TIME=en_US.UTF-8 date +"$format"
+}
+
+timestamp "$@"

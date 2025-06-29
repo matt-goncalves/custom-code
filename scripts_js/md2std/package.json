@@ -1,0 +1,18 @@
+{
+  "name": "md2std",
+  "version": "1.0.0",
+  "description": "A script to convert Markdown into my XML Standard",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "remark": "^15.0.1",
+    "remark-parse": "^11.0.0",
+    "xml-formatter": "^3.6.6"
+  }
+}

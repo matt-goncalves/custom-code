@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+TRASH="$HOME/.trash"
+
+clear-trash() {
+  rm -rf "$TRASH"/* && echo "Trash emptied."
+}
+
+del() {
+
+  mkdir -p "$TRASH"
+
+  for file in "$@"; do
+
+    # Generate time stamp
+    DATETIME=$(date +'%Y%m%dT%H%M%S')
+
+    # Move deleted content to the trash bin
+    mkdir -p "$TRASH"/"$DATETIME" \
+      && mv "$file" "$TRASH"/"$DATETIME" \
+      && echo "Successful deletion."
+
+  done
+}

@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+JOURNAL="$HOME/docs/journal"
+
+jed() {
+  local VERSION="1.0"
+
+  local HELP_TEXT="Usage: jed [-h] [-v] [-p]
+Options:
+  -h      Show this help message and exit
+  -v      Show version information and exit
+  -p      Open yesterday's journal entry instead of today"
+
+  # Function to create directory if missing
+  check-journal-dir() {
+    local DIR="$1"
+    if [ ! -d "$DIR" ]; then
+      mkdir -p "$DIR"
+      echo "Directory '$DIR' did not exist. Creating..."
+    fi
+  }
+
+  # Default to today
+  local YEAR=$(date +'%Y')
+  local MONTH=$(date +'%m')
+  local DAY=$(date +'%d')
+
+  OPTIND=1
+
+  while getopts ":hpv" opt; do
+    case $opt in
+      h)
+        echo "$HELP_TEXT"
+        return 0
+        ;;
+      v)
+        echo "jed version $VERSION"
+        return 0
+        ;;
+      p)
+        read YEAR MONTH DAY <<< $(date -d "yesterday" "+%Y %m %d")
+        ;;
+      \?)
+        echo "Error: Invalid option: -$OPTARG" >&2
+        return 1
+        ;;
+    esac
+  done
+
+  shift $((OPTIND -1))
+
+  # Prepare directories
+  check-journal-dir "$JOURNAL"
+  check-journal-dir "$JOURNAL/$YEAR"
+  check-journal-dir "$JOURNAL/$YEAR/$MONTH"
+
+  # File to open
+  local OPENFILE="${YEAR}/${MONTH}/${YEAR}-${MONTH}-${DAY}.txt"
+
+  if [ -n "$EDITOR" ]; then
+    "$EDITOR" "$JOURNAL/$OPENFILE"
+  else
+    vim -u ~/.vimrc-mini "$JOURNAL/$OPENFILE"
+  fi
+
+}
+
+
+
+jed "$@"

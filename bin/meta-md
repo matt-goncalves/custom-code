@@ -1,0 +1,56 @@
+#!/bin/bash
+
+meta-md() {
+  local VERSION="1.0"
+
+  local HELP_TEXT="Usage: meta [-h] [-v] file1.md [file2.md ...]
+Options:
+  -h      Show this help message and exit
+  -v      Show version information and exit
+Arguments:
+  file    One or more markdown files to extract YAML front matter from"
+
+  # Parse options
+  OPTIND=1
+  while getopts ":hv" opt; do
+    case $opt in
+      h)
+        echo "$HELP_TEXT"
+        return 0
+        ;;
+      v)
+        echo "meta version $VERSION"
+        return 0
+        ;;
+      \?)
+        echo "Error: Invalid option: -$OPTARG" >&2
+        return 1
+        ;;
+    esac
+  done
+
+  shift $((OPTIND -1))
+
+  if [ "$#" -eq 0 ]; then
+    echo "Error: No files specified." >&2
+    echo "$HELP_TEXT"
+    return 1
+  fi
+
+  for file in "$@"; do
+    if [[ ! -f "$file" ]]; then
+      echo "File not found: $file" >&2
+      continue
+    fi
+
+    # Extract YAML front matter between first two '---' lines
+    awk '
+      BEGIN { yaml=0; }
+      NR==1 && $0 ~ /^---$/ { yaml=1; next; }
+      yaml && $0 ~ /^---$/ { exit; }
+      yaml { print; }
+    ' "$file"
+  done
+}
+
+meta-md "$@"

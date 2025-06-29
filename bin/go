@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+go() {
+  local VERSION="1.0"
+
+  local HELP_TEXT="Usage: go [-h] [-v] -- command [args...]
+Options:
+  -h      Show this help message and exit
+  -v      Show version information and exit
+Arguments:
+  command     Command to run silently in background
+  args        Arguments for the command"
+
+  # Check if no arguments
+  if [ "$#" -eq 0 ]; then
+    echo "$HELP_TEXT"
+    return 1
+  fi
+
+  # Parse options only if first argument starts with -
+  # We require -- before command to separate flags from command
+  if [[ "$1" == "-"* ]]; then
+    while getopts ":hv" opt; do
+      case $opt in
+        h)
+          echo "$HELP_TEXT"
+          return 0
+          ;;
+        v)
+          echo "go version $VERSION"
+          return 0
+          ;;
+        \?)
+          echo "Error: Invalid option: -$OPTARG." >&2
+          return 1
+          ;;
+      esac
+    done
+    shift $((OPTIND -1))
+  fi
+
+  # Remaining args after flags are the command + args
+  if [ "$#" -eq 0 ]; then
+    echo "Error: No command specified." >&2
+    echo "$HELP_TEXT"
+    return 1
+  fi
+
+  # Run command silently in background & disown
+  "$@" > /dev/null 2>&1 & disown
+}
+
+go "$@"

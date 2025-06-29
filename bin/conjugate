@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+conjugate() {
+  local VERSION="1.0"
+
+  # Help text
+  local HELP_TEXT="Usage: conjugate [-h] [-v] [-p] verb1 [verb2 ...]
+Options:
+  -h      Show this help message and exit
+  -v      Show version information and exit
+  -p      Use Portuguese verbs (default is English)
+Arguments:
+  verb    One or more verbs to conjugate"
+
+  # Check dependencies
+  if ! command -v w3m >/dev/null 2>&1; then
+    echo "Error: w3m not found." >&2
+    return 1
+  fi
+
+  if ! command -v pandoc >/dev/null 2>&1; then
+    echo "Error: pandoc not found." >&2
+    return 1
+  fi
+
+  local SITE="https://conjugator.reverso.net"
+  local ACTION="conjugation"
+  local LINE='69,203p'
+  local LANGUAGE="english"
+
+  # Parse options
+  OPTIND=1
+  local p_flag=0
+
+  while getopts ":hpv" opt; do
+    case $opt in
+      h)
+        echo "$HELP_TEXT"
+        return 0
+        ;;
+      v)
+        echo "conjugate version $VERSION"
+        return 0
+        ;;
+      p)
+        LANGUAGE="portuguese"
+        ;;
+      \?)
+        echo "Error: Invalid option: -$OPTARG." >&2
+        return 1
+        ;;
+    esac
+  done
+
+  shift $((OPTIND - 1))
+
+  # If no verbs provided and no flags triggered exit earlier, print help and exit
+  if [ $# -eq 0 ]; then
+    echo "$HELP_TEXT"
+    return 1
+  fi
+
+  # Main functionality: iterate verbs
+  for verb in "$@"; do
+    w3m -dump_source "$SITE/$ACTION-$LANGUAGE-verb-$verb.html" | \
+    pandoc -f html -t plain | \
+    sed -n "$LINE"
+  done
+}
+
+conjugate "$@"
