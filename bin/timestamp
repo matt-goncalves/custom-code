@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# === Documentation === #
+#
+# This script generates a timestamp (current time), with different output
+# styles, and optional time output. Useful to call from Vim (when `bin/` dir is
+# in PATH).
+#
+# === === #
+
 timestamp() {
   local style=""
   local show_time=false

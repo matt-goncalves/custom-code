@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# === Documentation === #
+#
+# This function allows me to back up a directory, optionally with encryption.
+# I use it to run quick backups of my documents and config files.
+#
+# === === #
+
 backup() {
   local VERSION="1.0"
   local ENCRYPT=0

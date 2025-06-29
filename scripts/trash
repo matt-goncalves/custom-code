@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+# === Documentation === #
+#
+# This script offers a simple trashbin mechanism to my Bash command line, which
+# prevents me from accidentally rm-ing my files. It holds the contents of each
+# deletion inside `$HOME/.trash/`, with timestamps for each deletion. It also
+# clears the trash bin upon command.
+# 
+# Future expansions will give me the ability to restore file upon command.
+# Currently, I have to dig into the timestamped dirs, which is a pain.
+#
+# === === #
+
 TRASH="$HOME/.trash"
 
 clear-trash() {

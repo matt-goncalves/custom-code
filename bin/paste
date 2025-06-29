@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-# Pastes into terminal from clipboard
+# === Documentation === #
+#
+# Pastes into terminal from clipboard.
+#
+# === === #
+
 paste() {
   xsel --output --clipboard
 }

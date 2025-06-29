@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# === Documentation === #
+#
+# This script lets me use the conjugator app from reverso.net from the command
+# line. It searches for a verb and renders the output as text for the terminal.
+# I probably shouldn't be doing this.
+#
+# === === #
+
 conjugate() {
   local VERSION="1.0"
 

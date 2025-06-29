@@ -1,31 +1,27 @@
 #!/usr/bin/env bash
 
+# === Documentation === #
+#
+# This script allows me to select any directory as my main "work dir", so I can
+# jump right to it when I'm somewhere else in the file system. It saves the
+# current workdir path inside $WORKDIR_FILE, and updates it on command.
+#
+# === === #
+
 WORKDIR_FILE=$HOME/.config/_workdir
 
 gotowork() {
-
   if [ -f "$WORKDIR_FILE" ]; then
-
     DIR=$(cat "$WORKDIR_FILE")
-
     if [ -d "$DIR" ]; then
-
       cd "$DIR"
-
       echo "Welcome back!"
-
     else
-
       echo "Error: work directory does not exist." >&2
-
     fi
-
   else
-
     echo "Error: work directory not defined." >&2
-
   fi
-
 }
 
 workdir() {

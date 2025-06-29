@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-# Copies from stdin into clipboard
+# === Documentation === #
+#
+# Copies from stdin into clipboard. Used to be a simple alias, but I want to be
+# able to call it from Vim and other places.
+#
+# === === #
+
 copy() {
   xsel --input --clipboard
 }

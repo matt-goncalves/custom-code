@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# === Documentation === #
+#
+# This script extracts the metadata from Markdown files written with the Yaml
+# headers---turning this data into yml and echoing it out to the command line so
+# I can pipe it through `yq` and handle it programmatically. It's name is
+# similar to `meta`, that extracts data from my custom XML markup---but it's a
+# legacy tool that I used in the past, when Markdown was my main language.
+#
+# === === #
+
 meta-md() {
   local VERSION="1.0"
 

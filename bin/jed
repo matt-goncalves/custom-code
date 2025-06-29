@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+# === Documentation === #
+#
+# This program lets me edit the current (or previous) entry of my personal
+# journal from anywhere on the terminal. It also handles directories and files
+# if they aren't created, and lets me choose the main editor to write these
+# entries.
+#
+# In the future, I'll implement dates to be inserted into the file if they're
+# being created, so I don't have to type them directly.
+#
+# === === #
+
 JOURNAL="$HOME/docs/journal"
 
 jed() {
