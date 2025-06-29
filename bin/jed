@@ -67,7 +67,7 @@ Options:
   check-journal-dir "$JOURNAL/$YEAR/$MONTH"
 
   # File to open
-  local OPENFILE="${YEAR}/${MONTH}/${YEAR}-${MONTH}-${DAY}.txt"
+  local OPENFILE="${YEAR}/${MONTH}/${YEAR}-${MONTH}-${DAY}.xml"
 
   if [ -n "$EDITOR" ]; then
     "$EDITOR" "$JOURNAL/$OPENFILE"
